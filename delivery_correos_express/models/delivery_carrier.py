@@ -14,6 +14,14 @@ from .correos_express_request import (
 )
 
 
+def format_phone(phone):
+    if phone is None:
+        return ''
+    phone = phone.replace('+', '00')
+    phone = phone.replace(' ', '')
+    return phone
+
+
 class DeliveryCarrier(models.Model):
     _inherit = "delivery.carrier"
 
@@ -67,7 +75,7 @@ class DeliveryCarrier(models.Model):
             "paisISODest": partner.country_id.code or "",
             "codPosIntDest": partner.zip if not national else "",
             "contacDest": partner.name[:40] if partner.name else "",  # mandatory
-            "telefDest": phone[:15] if phone else "",  # mandatory
+            "telefDest": format_phone(phone),  # mandatory
             "emailDest": partner.email[:75] if partner.email else "",
         }
 
@@ -84,7 +92,7 @@ class DeliveryCarrier(models.Model):
             "paisISORte": partner.country_id.code or "",
             "codPosIntRte": "",
             "contacRte": partner.name or "",
-            "telefRte": partner.phone or "",
+            "telefRte": format_phone(partner.phone),
             "emailRte": partner.email or "",
         }
 
